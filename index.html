@@ -12,7 +12,7 @@
 margin:0;
 padding:0;
 box-sizing:border-box;
-font-family:Arial, sans-serif;
+font-family:Arial,sans-serif;
 }
 
 body{
@@ -152,6 +152,12 @@ color:white;
 display:none;
 }
 
+.loading{
+text-align:center;
+font-size:24px;
+padding:30px;
+}
+
 @media(max-width:700px){
 
 h1{
@@ -283,7 +289,7 @@ document.getElementById("nextBtn").style.display = "none";
 document.getElementById("explanation").style.display = "none";
 
 document.getElementById("question").innerHTML =
-"⏳ AI generating question...";
+'<div class="loading">⏳ AI Generating Question...</div>';
 
 document.getElementById("options").innerHTML = "";
 
@@ -294,22 +300,19 @@ const difficulty =
 document.getElementById("difficulty").value;
 
 const prompt = `
-
-Generate 1 competitive exam MCQ in Hindi.
+Generate ONE competitive exam MCQ in Hindi.
 
 Subject: ${subject}
-
 Difficulty: ${difficulty}
 
-Return ONLY valid JSON:
+Return ONLY pure JSON.
 
 {
-"question":"",
-"options":["","","",""],
-"answer":"",
-"explanation":""
+"question":"question here",
+"options":["A","B","C","D"],
+"answer":"correct option",
+"explanation":"short explanation"
 }
-
 `;
 
 try{
@@ -338,6 +341,7 @@ text:prompt
 ],
 
 generationConfig:{
+temperature:0.9,
 responseMimeType:"application/json"
 }
 
@@ -351,10 +355,24 @@ const data = await response.json();
 
 console.log(data);
 
+if(data.error){
+
+document.getElementById("question").innerHTML =
+"❌ " + data.error.message;
+
+return;
+
+}
+
 const text =
 data.candidates[0].content.parts[0].text;
 
-const mcq = JSON.parse(text);
+const cleanText = text
+.replace(/```json/g,"")
+.replace(/```/g,"")
+.trim();
+
+const mcq = JSON.parse(cleanText);
 
 showQuestion(mcq);
 
@@ -388,9 +406,9 @@ html += `
 
 onclick="checkAnswer(
 this,
-'${option.replace(/'/g,"")},
-'${mcq.answer.replace(/'/g,"")}',
-'${mcq.explanation.replace(/'/g,"")}'
+\`${option}\`,
+\`${mcq.answer}\`,
+\`${mcq.explanation}\`
 )">
 
 ${option}
@@ -416,7 +434,7 @@ buttons.forEach(btn=>{
 
 btn.disabled = true;
 
-if(btn.innerText === correct){
+if(btn.innerText.trim() === correct.trim()){
 
 btn.classList.add("correct");
 
@@ -424,7 +442,7 @@ btn.classList.add("correct");
 
 });
 
-if(selected === correct){
+if(selected.trim() === correct.trim()){
 
 score++;
 
