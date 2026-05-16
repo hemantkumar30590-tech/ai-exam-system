@@ -1,10 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Ultimate AI Exam System</title>
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>AI Exam System</title>
 
 <style>
 
@@ -18,8 +22,8 @@ font-family:Arial,sans-serif;
 body{
 background:#050816;
 color:white;
-min-height:100vh;
 padding:20px;
+min-height:100vh;
 }
 
 .container{
@@ -29,8 +33,8 @@ margin:auto;
 
 h1{
 text-align:center;
-font-size:55px;
-margin-bottom:30px;
+font-size:50px;
+margin-bottom:25px;
 background:linear-gradient(90deg,#4cc9ff,#9b5cff);
 -webkit-background-clip:text;
 -webkit-text-fill-color:transparent;
@@ -44,18 +48,16 @@ margin-bottom:20px;
 }
 
 select{
-padding:18px;
+padding:16px;
 border:none;
 border-radius:15px;
-background:rgba(255,255,255,0.08);
+background:#111827;
 color:white;
 font-size:18px;
-outline:none;
-backdrop-filter:blur(10px);
 }
 
 button{
-padding:18px;
+padding:16px;
 border:none;
 border-radius:15px;
 font-size:18px;
@@ -83,7 +85,7 @@ backdrop-filter:blur(12px);
 border:1px solid rgba(255,255,255,0.1);
 }
 
-.top-bar{
+.topbar{
 display:flex;
 justify-content:space-between;
 margin-bottom:20px;
@@ -108,8 +110,8 @@ transition:0.5s;
 
 #question{
 font-size:28px;
-margin-bottom:25px;
 line-height:1.5;
+margin-bottom:25px;
 }
 
 .options{
@@ -118,13 +120,13 @@ gap:15px;
 }
 
 .option-btn{
-background:rgba(255,255,255,0.08);
+background:#1e293b;
 color:white;
 text-align:left;
 }
 
 .option-btn:hover{
-background:#2f3d7a;
+background:#334155;
 }
 
 .correct{
@@ -136,32 +138,32 @@ background:#dc2626 !important;
 }
 
 #explanation{
-margin-top:25px;
+margin-top:20px;
 padding:20px;
-background:rgba(255,255,255,0.05);
+background:#111827;
 border-radius:15px;
-line-height:1.7;
 display:none;
+line-height:1.7;
 }
 
-.next-btn{
+#nextBtn{
+display:none;
 margin-top:20px;
 width:100%;
 background:linear-gradient(90deg,#4cc9ff,#9b5cff);
 color:white;
-display:none;
 }
 
 .loading{
 text-align:center;
 font-size:24px;
-padding:30px;
+padding:20px;
 }
 
 @media(max-width:700px){
 
 h1{
-font-size:40px;
+font-size:38px;
 }
 
 .controls{
@@ -175,7 +177,9 @@ font-size:22px;
 }
 
 </style>
+
 </head>
+
 <body>
 
 <div class="container">
@@ -215,23 +219,33 @@ font-size:22px;
 
 </div>
 
-<button class="generate-btn" onclick="generateMCQ()">
+<button class="generate-btn"
+onclick="generateMCQ()">
+
 Generate AI MCQ
+
 </button>
 
 <div class="card">
 
-<div class="top-bar">
+<div class="topbar">
 
-<div>Score: <span id="score">0</span></div>
+<div>
+Score:
+<span id="score">0</span>
+</div>
 
-<div>Time: <span id="timer">0</span>s</div>
+<div>
+Time:
+<span id="timer">0</span>s
+</div>
 
 </div>
 
 <div class="progress">
 
-<div class="progress-fill" id="progressFill"></div>
+<div class="progress-fill"
+id="progressFill"></div>
 
 </div>
 
@@ -241,12 +255,16 @@ Click "Generate AI MCQ"
 
 </div>
 
-<div class="options" id="options"></div>
+<div class="options"
+id="options"></div>
 
 <div id="explanation"></div>
 
-<button class="next-btn" id="nextBtn" onclick="generateMCQ()">
+<button id="nextBtn"
+onclick="generateMCQ()">
+
 Next Question
+
 </button>
 
 </div>
@@ -255,12 +273,16 @@ Next Question
 
 <script>
 
-const API_KEY = "AIzaSyD89s9q6c0xxk8McCf7dgcWTeC_i4gC97Y";
+const API_KEY =
+"AIzaSyB1cyAk_Gc7VxtE1jJbQtBnXhP2uklbdxQ";
 
 let score = 0;
+
 let timer = 0;
+
 let timerInterval;
-let questionCount = 0;
+
+let progress = 0;
 
 function startTimer(){
 
@@ -268,13 +290,17 @@ clearInterval(timerInterval);
 
 timer = 0;
 
-document.getElementById("timer").innerText = timer;
+document.getElementById(
+"timer"
+).innerText = timer;
 
 timerInterval = setInterval(()=>{
 
 timer++;
 
-document.getElementById("timer").innerText = timer;
+document.getElementById(
+"timer"
+).innerText = timer;
 
 },1000);
 
@@ -284,35 +310,53 @@ async function generateMCQ(){
 
 startTimer();
 
-document.getElementById("nextBtn").style.display = "none";
+document.getElementById(
+"nextBtn"
+).style.display = "none";
 
-document.getElementById("explanation").style.display = "none";
+document.getElementById(
+"explanation"
+).style.display = "none";
 
-document.getElementById("question").innerHTML =
-'<div class="loading">⏳ AI Generating Question...</div>';
+document.getElementById(
+"question"
+).innerHTML =
 
-document.getElementById("options").innerHTML = "";
+'<div class="loading">⏳ AI Generating MCQ...</div>';
+
+document.getElementById(
+"options"
+).innerHTML = "";
 
 const subject =
-document.getElementById("subject").value;
+document.getElementById(
+"subject"
+).value;
 
 const difficulty =
-document.getElementById("difficulty").value;
+document.getElementById(
+"difficulty"
+).value;
 
 const prompt = `
-Generate ONE competitive exam MCQ in Hindi.
 
-Subject: ${subject}
-Difficulty: ${difficulty}
+Generate ONE MCQ in Hindi.
+
+Subject:
+${subject}
+
+Difficulty:
+${difficulty}
 
 Return ONLY pure JSON.
 
 {
-"question":"question here",
-"options":["A","B","C","D"],
-"answer":"correct option",
-"explanation":"short explanation"
+"question":"",
+"options":["","","",""],
+"answer":"",
+"explanation":""
 }
+
 `;
 
 try{
@@ -341,8 +385,8 @@ text:prompt
 ],
 
 generationConfig:{
-temperature:0.9,
-responseMimeType:"application/json"
+responseMimeType:
+"application/json"
 }
 
 })
@@ -351,49 +395,71 @@ responseMimeType:"application/json"
 
 );
 
-const data = await response.json();
+const data =
+await response.json();
 
 console.log(data);
 
 if(data.error){
 
-document.getElementById("question").innerHTML =
-"❌ " + data.error.message;
+document.getElementById(
+"question"
+).innerHTML =
+
+"❌ " +
+data.error.message;
 
 return;
 
 }
 
-const text =
-data.candidates[0].content.parts[0].text;
+const rawText =
+data.candidates[0]
+.content.parts[0]
+.text;
 
-const cleanText = text
+const cleanText =
+rawText
 .replace(/```json/g,"")
 .replace(/```/g,"")
 .trim();
 
-const mcq = JSON.parse(cleanText);
+const mcq =
+JSON.parse(cleanText);
 
-showQuestion(mcq);
+showMCQ(mcq);
 
-questionCount++;
+progress += 10;
 
-updateProgress();
+if(progress > 100){
+progress = 0;
+}
+
+document.getElementById(
+"progressFill"
+).style.width =
+progress + "%";
 
 }catch(error){
 
 console.log(error);
 
-document.getElementById("question").innerHTML =
+document.getElementById(
+"question"
+).innerHTML =
+
 "❌ Error generating MCQ";
 
 }
 
 }
 
-function showQuestion(mcq){
+function showMCQ(mcq){
 
-document.getElementById("question").innerHTML =
+document.getElementById(
+"question"
+).innerHTML =
+
 mcq.question;
 
 let html = "";
@@ -402,7 +468,8 @@ mcq.options.forEach(option=>{
 
 html += `
 
-<button class="option-btn"
+<button
+class="option-btn"
 
 onclick="checkAnswer(
 this,
@@ -419,47 +486,76 @@ ${option}
 
 });
 
-document.getElementById("options").innerHTML = html;
+document.getElementById(
+"options"
+).innerHTML = html;
 
 }
 
-function checkAnswer(button,selected,correct,explanation){
+function checkAnswer(
+button,
+selected,
+correct,
+explanation
+){
 
 clearInterval(timerInterval);
 
 const buttons =
-document.querySelectorAll(".option-btn");
+document.querySelectorAll(
+".option-btn"
+);
 
 buttons.forEach(btn=>{
 
 btn.disabled = true;
 
-if(btn.innerText.trim() === correct.trim()){
+if(
+btn.innerText.trim()
+===
+correct.trim()
+){
 
-btn.classList.add("correct");
+btn.classList.add(
+"correct"
+);
 
 }
 
 });
 
-if(selected.trim() === correct.trim()){
+if(
+selected.trim()
+===
+correct.trim()
+){
 
 score++;
 
-document.getElementById("score").innerText = score;
+document.getElementById(
+"score"
+).innerText = score;
 
-button.classList.add("correct");
+button.classList.add(
+"correct"
+);
 
 }else{
 
-button.classList.add("wrong");
+button.classList.add(
+"wrong"
+);
 
 }
 
-document.getElementById("explanation").style.display =
+document.getElementById(
+"explanation"
+).style.display =
 "block";
 
-document.getElementById("explanation").innerHTML =
+document.getElementById(
+"explanation"
+).innerHTML =
 
 `
 <h3>Explanation:</h3>
@@ -467,18 +563,10 @@ document.getElementById("explanation").innerHTML =
 ${explanation}
 `;
 
-document.getElementById("nextBtn").style.display =
+document.getElementById(
+"nextBtn"
+).style.display =
 "block";
-
-}
-
-function updateProgress(){
-
-const progress =
-(questionCount % 10) * 10;
-
-document.getElementById("progressFill").style.width =
-progress + "%";
 
 }
 
