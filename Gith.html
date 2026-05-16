@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>AI India GK Generator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:#06111f;
+color:white;
+padding:20px;
+}
+
+h1{
+font-size:45px;
+color:#4cc9ff;
+text-align:center;
+}
+
+.card{
+background:rgba(255,255,255,0.05);
+padding:25px;
+border-radius:20px;
+margin-top:20px;
+border:1px solid rgba(255,255,255,0.1);
+backdrop-filter:blur(10px);
+}
+
+select,input{
+width:100%;
+padding:16px;
+margin-top:15px;
+font-size:18px;
+border:none;
+border-radius:12px;
+}
+
+button{
+width:100%;
+padding:18px;
+margin-top:15px;
+font-size:20px;
+border:none;
+border-radius:12px;
+background:#22c55e;
+color:white;
+font-weight:bold;
+cursor:pointer;
+}
+
+#output{
+margin-top:25px;
+line-height:1.8;
+font-size:18px;
+white-space:pre-wrap;
+word-break:break-word;
+}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+gap:15px;
+margin-top:20px;
+}
+
+.stat-box{
+background:#10192f;
+padding:20px;
+border-radius:18px;
+text-align:center;
+}
+
+.stat-box h2{
+margin:0;
+font-size:35px;
+color:#4cc9ff;
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>🇮🇳 AI Random India GK Generator</h1>
+
+<div class="card">
+
+<h2>Create AI Question Paper</h2>
+
+<select id="category">
+<option>Indian History</option>
+<option>Indian Geography</option>
+<option>Indian Constitution</option>
+<option>Indian Economy</option>
+<option>Indian Science</option>
+<option>Indian Rivers</option>
+<option>Freedom Movement</option>
+<option>Current Affairs India</option>
+<option>Mixed India GK</option>
+</select>
+
+<select id="difficulty">
+<option>Easy</option>
+<option>Medium</option>
+<option>Hard</option>
+<option>UPSC Level</option>
+</select>
+
+<input id="questions" type="number" value="10" placeholder="Number of Questions">
+
+<button onclick="generatePaper()">
+Generate AI Question Paper
+</button>
+
+</div>
+
+<div class="stats">
+
+<div class="stat-box">
+<h2 id="paperCount">0</h2>
+<p>Papers Generated</p>
+</div>
+
+<div class="stat-box">
+<h2 id="mcqCount">0</h2>
+<p>Total MCQs</p>
+</div>
+
+<div class="stat-box">
+<h2 id="aiStatus">LIVE</h2>
+<p>Gemini AI</p>
+</div>
+
+</div>
+
+<div class="card">
+<h2>AI Generated Paper</h2>
+<div id="output">
+Your AI-generated India GK paper will appear here...
+</div>
+</div>
+
+<script>
+
+let totalPapers = 0;
+let totalMCQs = 0;
+
+async function generatePaper(){
+
+const category =
+document.getElementById("category").value;
+
+const difficulty =
+document.getElementById("difficulty").value;
+
+const questions =
+document.getElementById("questions").value;
+
+const output =
+document.getElementById("output");
+
+output.innerHTML =
+"🤖 Gemini AI is generating random India GK paper...";
+
+const API_KEY = "AIzaSyBWrtPLWF9lNnGURmXG-Gx1nvRMXANdKM4";
+
+try{
+
+const prompt = `
+
+Tum ek ultra advanced India GK exam AI ho.
+
+Category:
+${category}
+
+Difficulty:
+${difficulty}
+
+Number of Questions:
+${questions}
+
+Kaam:
+
+1. Random India GK question paper banao
+2. Exam-oriented MCQ banao
+3. Har question ke 4 options do
+4. Correct answer mention karo
+5. Hindi language use karo
+6. UPSC + SSC + Vyapam style rakho
+7. Important factual questions include karo
+8. Questions repeat mat karo
+9. Modern + static GK mix rakho
+10. Clean formatting use karo
+
+`;
+
+const response = await fetch(
+"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + API_KEY,
+{
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+
+contents:[
+{
+parts:[
+{
+text:prompt
+}
+]
+}
+]
+
+})
+
+}
+
+);
+
+const data = await response.json();
+
+console.log(data);
+
+if(data.candidates){
+
+const text =
+data.candidates[0]
+.content.parts[0]
+.text;
+
+output.innerHTML =
+text.replace(/\n/g,"<br>");
+
+updateStats(questions);
+
+}else{
+
+output.innerHTML =
+JSON.stringify(data,null,2);
+
+}
+
+}catch(error){
+
+output.innerHTML =
+"ERROR:\n\n" + error;
+
+}
+
+}
+
+function updateStats(questionCount){
+
+totalPapers++;
+
+totalMCQs += parseInt(questionCount);
+
+
+document.getElementById("paperCount")
+.innerHTML = totalPapers;
+
+
+document.getElementById("mcqCount")
+.innerHTML = totalMCQs;
+
+}
+
+</script>
+
+</body>
+</html>
